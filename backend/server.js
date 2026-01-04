@@ -9,7 +9,7 @@ dotenv.config();
 
 const app = express();
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: process.env.FRONTEND_URL || "http://localhost:5173",
   methods: ["GET", "POST", "PUT", "DELETE"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
@@ -27,9 +27,9 @@ const db = mysql.createConnection({
 // Connect
 db.connect(err => {
   if (err) {
-    console.log("❌ MySQL ERROR:", err);
+    console.log(" MySQL ERROR:", err);
   } else {
-    console.log("✅ MySQL Connected");
+    console.log(" MySQL Connected");
   }
 });
 
@@ -48,7 +48,7 @@ app.post("/register", (req, res) => {
 
   db.query(sql, [name, email, hashed], (err) => {
     if (err) {
-      console.log("❌ Register error:", err);
+      console.log(" Register error:", err);
       return res.status(500).json({ error: "Email already exists" });
     }
 
@@ -90,6 +90,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.listen(5000, () => {
-  console.log("🚀 Backend running at http://localhost:5000");
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+  console.log(` Backend running at http://localhost:${PORT}`);
 });
